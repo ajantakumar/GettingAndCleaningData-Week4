@@ -3,7 +3,6 @@
 # The script will read in data sets, merge them, tidy up the data set, provide decriptive
 # column names, and then summarize the data set.  The summary data set will be written
 # to a file.  
-
 # Install packages
 
 install.packages("dplyr")
@@ -25,10 +24,6 @@ x_test <-  read.table("./UCI HAR Dataset/test/X_test.txt",stringsAsFactors = FAL
 y_test <-  read.table("./UCI HAR Dataset/test/y_test.txt",stringsAsFactors = FALSE)
 test_subject <- read.table("./UCI HAR Dataset/test/subject_test.txt",stringsAsFactors = FALSE)
 
-activity_info <- read.table("./UCI HAR Dataset/activity_labels.txt",stringsAsFactors = FALSE)
-
-features <- read.table("./UCI HAR Dataset/features.txt",stringsAsFactors = FALSE)
-
 # Merge data and create column headings
 
 train_data <- cbind(train_subject,y_train,x_train)
@@ -46,7 +41,10 @@ rm(x_test)
 rm(y_test)
 rm(test_subject)
 
+# Add column names. Read features data set which contains column names for measurements.  
+# Make the 2nd column of the features data set the column names for the merged data set.
 
+features <- read.table("./UCI HAR Dataset/features.txt",stringsAsFactors = FALSE)
 names(all_data) <- c("Subject","Activity",tolower(features$V2))
 
 # 2.Extracts only the measurements on the mean and standard deviation for each measurement. 
@@ -60,6 +58,10 @@ rm(all_data)
 
 # 3. Uses descriptive activity names to name the activities in the data set
 
+# Read in the table which contains the description of what activity each index corresponds to
+activity_info <- read.table("./UCI HAR Dataset/activity_labels.txt",stringsAsFactors = FALSE)
+
+# Substitute descriptive names for each activity
 mean_std_data$Activity <- activity_info[mean_std_data$Activity,2]
 
 # 4. Appropriately labels the data set with descriptive variable names.
@@ -82,7 +84,6 @@ names(mean_std_data) <- gsub("-std-","Std",names(mean_std_data))
 names(mean_std_data) <- gsub("-mean","Mean",names(mean_std_data))
 names(mean_std_data) <- gsub("-std","Std",names(mean_std_data))
 names(mean_std_data) <- gsub("-","",names(mean_std_data))
-
 
 # 5. From the data set in step 4, creates a second, independent tidy data set
 #    with the average of each variable for each activity and each subject.
